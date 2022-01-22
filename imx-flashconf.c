@@ -1,3 +1,8 @@
+// SPDX-License-Identifier: (GPL-2.0 or MIT)
+/*
+ * Copyright (C) 2020 Jesse Taube <Mr.Bossman075@gmail.com>
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -5,12 +10,13 @@
 #include <errno.h>
 #include <unistd.h>
 #include <stdbool.h>
-#include "flash.h"
+#include "flash-defs.h"
 #include "flash_confs.h"
 
-size_t get_name_match(const flash_configs* , const char * name);
-void help(int code);
-void prepend(FILE * fno, size_t offset);
+size_t get_name_match(const flash_configs * , const char *);
+void help(int);
+void prepend(FILE *, size_t);
+void list(const flash_configs *);
 int main(int argc, char *argv[]){
 
 	char name[32];
@@ -22,7 +28,7 @@ int main(int argc, char *argv[]){
 	FILE * fnum;
 	const flash_configs * configs = get_flash_confs();
 	const flexspi_nor_config_t * config;
-	while ((opt = getopt(argc, argv, "p:n:o:b:")) != -1)
+	while ((opt = getopt(argc, argv, "p:n:o:b:lh")) != -1)
 	{
 		errno = 0;
 		switch (opt)
@@ -49,6 +55,9 @@ int main(int argc, char *argv[]){
 				break;
 			case 'h':
 				help(0);
+				break;
+			case 'l':
+				list(configs);
 				break;
 			default:
 				help(-3);
@@ -87,8 +96,13 @@ int main(int argc, char *argv[]){
 	puts("Done!");
 	return 0;
 }
+void list(const flash_configs * configs){
+	for(size_t i = 0; *configs[i].name;i++)
+		printf("%lu: %s\n",i,configs[i].name);
+	exit(0);
+}
 
-size_t get_name_match(const flash_configs* configs, const char * name){
+size_t get_name_match(const flash_configs * configs, const char * name){
 	size_t i = 0;
 	while(*configs[i].name){
 		if(strncmp(configs[i].name,name,32) == 0)
@@ -137,6 +151,13 @@ void prepend(FILE * fno, size_t offset){
 }
 
 void help(int code){
-	puts("help");
+	puts("+--------------------------------------------------------------+");
+	puts("| -h - This message.                                           |");
+	puts("| -o - Output file name.                                       |");
+	puts("| -n - Name of flash config to use, defined in flash_confs.c . |");
+	puts("| -p - Padding offset, other than default (0x1000).            |");
+	puts("| -b - Create binary image, and offset to put u-boot.img at.   |");
+	puts("| -l - List names of flash defined in flash_confs.c .          |");
+	puts("+--------------------------------------------------------------+");
 	exit(code);
 }

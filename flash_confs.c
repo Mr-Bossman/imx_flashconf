@@ -1,4 +1,10 @@
-#include "flash.h"
+// SPDX-License-Identifier: BSD-3-Clause
+/*
+ * Copyright 2018-2020 NXP
+ * All rights reserved.
+ */
+
+#include "flash-defs.h"
 #include "flash_confs.h"
 static const flash_configs configs[] = {
 	{ .config = {

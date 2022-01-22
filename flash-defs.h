@@ -1,8 +1,7 @@
+// SPDX-License-Identifier: BSD-3-Clause
 /*
  * Copyright 2018-2020 NXP
  * All rights reserved.
- *
- * SPDX-License-Identifier: BSD-3-Clause
  */
 
 #ifndef __FLEXSPI_NOR_CONFIG__
