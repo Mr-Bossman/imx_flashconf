@@ -19,8 +19,8 @@ void prepend(FILE *, size_t);
 void list(const flash_configs *);
 int main(int argc, char *argv[]){
 
-	char name[32];
-	char fname[32];
+	char name[32] = {};
+	const char * fname;
 	int opt;
 	size_t index = 0;
 	size_t padding = 0x1000; // default offset for nor
@@ -44,7 +44,7 @@ int main(int argc, char *argv[]){
 				strncpy(name,optarg,32);
 				break;
 			case 'o':
-				strncpy(fname,optarg,32);
+				fname = optarg;
 				break;
 			case 'b':
 				bin = strtol(optarg, NULL, 0);
@@ -69,7 +69,9 @@ int main(int argc, char *argv[]){
 		puts("Need an output file name.");
 	if(!strnlen(name,32))
 		puts("Need a flash config name.");
-	if(!strnlen(name,32) || !strnlen(fname,32))
+	if(strnlen(name,32) == 32)
+		puts("Flash config name too long.");
+	if(!strnlen(name,32) || !strnlen(fname,32) || strnlen(name,32) == 32)
 		help(-3);
 
 	index = get_name_match(configs,name);
